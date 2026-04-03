@@ -121,7 +121,7 @@ export default function CategoryDropdown({
       </style>
 
       <div className="p-4">
-        <h3 className="text-lg font-bold text-white mb-3">Select Category</h3>
+        <h3 className="text-lg font-extrabold brand-font brand-shimmer mb-3">Select Category</h3>
 
         <div className="space-y-2">
           {CATEGORIES.map((category) => {
