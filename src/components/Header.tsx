@@ -109,8 +109,8 @@ export default function Header({
                 }}
                 className={`px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-semibold rounded-md transition-all ${
                   gameMode === mode.id
-                    ? 'bg-amber-500 text-white shadow-sm'
-                    : 'text-white/60 hover:text-white/90 hover:bg-white/5'
+                    ? 'bg-amber-500/10 text-amber-400 border border-amber-400/50 shadow-sm shadow-amber-500/10'
+                    : 'text-white/60 hover:text-white/90 hover:bg-white/5 border border-transparent'
                 }`}
               >
                 {mode.label}
@@ -124,7 +124,7 @@ export default function Header({
               onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
               className={`flex items-center gap-1 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-semibold rounded-lg transition-all border ${
                 gameMode === 'category' || showCategoryDropdown
-                  ? 'bg-amber-500 text-white border-amber-400/50 shadow-sm'
+                  ? 'bg-amber-500/10 text-amber-400 border-amber-400/50 shadow-sm shadow-amber-500/10'
                   : 'bg-white/5 text-white/60 border-white/10 hover:text-white/90 hover:bg-white/10'
               }`}
               aria-label="Categories"
