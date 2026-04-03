@@ -98,7 +98,7 @@ export default function Header({
         </div>
 
         {/* Mode selector — single row segmented control */}
-        <div className="flex items-center gap-1 justify-center overflow-x-auto">
+        <div className="flex items-center gap-1 justify-center">
           <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10 flex-shrink-0">
             {MODES.map(mode => (
               <button
