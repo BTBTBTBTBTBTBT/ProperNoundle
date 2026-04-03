@@ -13,6 +13,7 @@ interface DatabasePuzzle {
   category: string;
   theme_category: string | null;
   hint: string | null;
+  wiki_title: string | null;
   source: string;
   created_at: string;
 }
@@ -25,6 +26,7 @@ function mapDatabasePuzzle(dbPuzzle: DatabasePuzzle): Puzzle {
     category: dbPuzzle.category as Puzzle['category'],
     themeCategory: dbPuzzle.theme_category as ThemeCategory | undefined,
     hint: dbPuzzle.hint || undefined,
+    wikiTitle: dbPuzzle.wiki_title || undefined,
   };
 }
 
@@ -91,6 +93,7 @@ export async function seedStaticPuzzles(puzzles: Puzzle[]): Promise<void> {
     category: puzzle.category,
     theme_category: puzzle.themeCategory || null,
     hint: puzzle.hint || null,
+    wiki_title: puzzle.wikiTitle || null,
     source: 'static',
   }));
 

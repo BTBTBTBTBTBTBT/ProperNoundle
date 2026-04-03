@@ -1,6 +1,6 @@
 import { PUZZLES } from '../data/dataset';
 import { Puzzle, ThemeCategory } from '../types/game';
-import { getAllPuzzles, getPuzzlesByTheme, seedStaticPuzzles } from './puzzleDatabase';
+import { supabase, getAllPuzzles, getPuzzlesByTheme, seedStaticPuzzles } from './puzzleDatabase';
 
 const EPOCH_DATE = new Date('2024-01-01');
 
@@ -12,27 +12,22 @@ async function ensurePuzzlesLoaded(): Promise<Puzzle[]> {
   const now = Date.now();
 
   if (cachedPuzzles.length > PUZZLES.length || (now - lastFetch) < CACHE_DURATION) {
-    console.log(`Using cached puzzles (${cachedPuzzles.length} puzzles)`);
     return cachedPuzzles;
   }
 
   try {
-    console.log('Fetching puzzles from Supabase database...');
     const dbPuzzles = await getAllPuzzles();
 
     if (dbPuzzles.length === 0) {
-      console.log('No puzzles in database, seeding static puzzles...');
       await seedStaticPuzzles(PUZZLES);
       cachedPuzzles = [...PUZZLES];
     } else {
-      console.log(`Loaded ${dbPuzzles.length} puzzles from database`);
       cachedPuzzles = dbPuzzles;
     }
 
     lastFetch = now;
   } catch (error) {
     console.error('Failed to load puzzles from database:', error);
-    console.log('Falling back to static puzzles');
     cachedPuzzles = [...PUZZLES];
   }
 
@@ -51,8 +46,35 @@ export function getDaysSinceEpoch(dateString?: string): number {
 }
 
 export async function getDailyPuzzle(dateString?: string): Promise<Puzzle> {
+  const date = dateString || getTodayString();
   const puzzles = await ensurePuzzlesLoaded();
-  const dayNumber = getDaysSinceEpoch(dateString);
+
+  // Try to get today's puzzle from the daily_puzzles table
+  try {
+    const { data, error } = await supabase
+      .from('daily_puzzles')
+      .select('puzzle_id, puzzles(*)')
+      .eq('date', date)
+      .single();
+
+    if (!error && data?.puzzles) {
+      const dbPuzzle = data.puzzles as any;
+      return {
+        id: dbPuzzle.id,
+        answer: dbPuzzle.answer,
+        display: dbPuzzle.display,
+        category: dbPuzzle.category,
+        themeCategory: dbPuzzle.theme_category || undefined,
+        hint: dbPuzzle.hint || undefined,
+        wikiTitle: dbPuzzle.wiki_title || undefined,
+      };
+    }
+  } catch {
+    // Supabase unavailable, fall through to modulo logic
+  }
+
+  // Fallback: deterministic modulo selection
+  const dayNumber = getDaysSinceEpoch(date);
   const index = dayNumber % puzzles.length;
   return puzzles[index];
 }
