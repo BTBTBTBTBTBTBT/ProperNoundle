@@ -124,15 +124,15 @@ export default function ResultsModal({
           <div className="space-y-4 text-center">
             <div className="mb-2 flex justify-center">
               {imageUrl ? (
-                <div className="relative w-28 h-28 rounded-xl overflow-hidden shadow-lg border border-white/10">
+                <div className="relative max-w-[200px] rounded-xl overflow-hidden shadow-lg border border-white/10">
                   <img
                     src={imageUrl}
                     alt={answer}
-                    className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    className={`w-full h-auto transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
                     onLoad={() => setImageLoaded(true)}
                   />
                   {!imageLoaded && (
-                    <div className="absolute inset-0 bg-white/5 animate-pulse rounded-xl" />
+                    <div className="w-28 h-28 bg-white/5 animate-pulse rounded-xl" />
                   )}
                 </div>
               ) : (
