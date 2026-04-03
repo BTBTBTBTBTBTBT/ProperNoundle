@@ -1,7 +1,34 @@
 import { useRef, useState } from 'react';
-import { HelpCircle, BarChart3, Settings, Sparkles, Grid3x3 } from 'lucide-react';
+import { HelpCircle, BarChart3, Settings, Grid3x3 } from 'lucide-react';
 import { GameMode, ThemeCategory } from '../types/game';
 import CategoryDropdown from './CategoryDropdown';
+
+function FlankerStar({ className = '' }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className={`flex-shrink-0 ${className}`}
+    >
+      {/* 4-point diamond star */}
+      <path
+        d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"
+        fill="url(#star-gradient)"
+      />
+      {/* Small accent dots */}
+      <circle cx="6" cy="6" r="0.8" fill="rgba(255,215,0,0.5)" />
+      <circle cx="18" cy="6" r="0.6" fill="rgba(255,215,0,0.4)" />
+      <circle cx="18" cy="18" r="0.7" fill="rgba(255,215,0,0.3)" />
+      <defs>
+        <radialGradient id="star-gradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#fffbe6" />
+          <stop offset="40%" stopColor="#fbbf24" />
+          <stop offset="100%" stopColor="#d97706" />
+        </radialGradient>
+      </defs>
+    </svg>
+  );
+}
 
 interface HeaderProps {
   gameMode: GameMode;
@@ -32,40 +59,40 @@ export default function Header({
   const categoryButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <header className="border-b border-white/10 bg-black/40 backdrop-blur-md relative z-50">
+    <header className="header-backdrop header-border-glow relative z-50">
       <div className="max-w-2xl mx-auto px-2 sm:px-3 py-1.5 sm:py-2">
         {/* Top row: icons + title */}
         <div className="flex items-center justify-between mb-1.5">
           <button
             onClick={onShowHelp}
-            className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+            className="p-1.5 hover:bg-white/10 rounded-lg transition-colors group"
             aria-label="How to play"
           >
-            <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white/70" />
+            <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white/50 group-hover:text-white/80 transition-colors" />
           </button>
 
-          <div className="flex items-center gap-1">
-            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-amber-400 flex-shrink-0" style={{ filter: 'drop-shadow(0 0 6px rgba(255, 215, 0, 0.5))' }} />
-            <h1 className="brand-font text-[15px] sm:text-2xl font-bold text-white tracking-tight whitespace-nowrap" style={{ textShadow: '0 0 15px rgba(255, 215, 0, 0.4)' }}>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <FlankerStar className="w-4 h-4 sm:w-5 sm:h-5 flanker-glow" />
+            <h1 className="brand-font brand-shimmer text-[16px] sm:text-2xl font-extrabold tracking-[-0.02em] whitespace-nowrap">
               ProperNoundle
             </h1>
-            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-amber-400 flex-shrink-0" style={{ filter: 'drop-shadow(0 0 6px rgba(255, 215, 0, 0.5))' }} />
+            <FlankerStar className="w-4 h-4 sm:w-5 sm:h-5 flanker-glow flanker-glow-delay" />
           </div>
 
-          <div className="flex">
+          <div className="flex gap-0.5">
             <button
               onClick={onShowStats}
-              className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-1.5 hover:bg-white/10 rounded-lg transition-colors group"
               aria-label="Statistics"
             >
-              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-white/70" />
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-white/50 group-hover:text-white/80 transition-colors" />
             </button>
             <button
               onClick={onShowSettings}
-              className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-1.5 hover:bg-white/10 rounded-lg transition-colors group"
               aria-label="Settings"
             >
-              <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-white/70" />
+              <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-white/50 group-hover:text-white/80 transition-colors" />
             </button>
           </div>
         </div>

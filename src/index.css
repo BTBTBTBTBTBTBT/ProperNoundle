@@ -13,6 +13,81 @@
   .brand-font {
     font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   }
+
+  /* ── Premium header treatment ──────────────────────────────── */
+  .header-backdrop {
+    background:
+      radial-gradient(ellipse 80% 120% at 50% 0%, rgba(255, 191, 0, 0.06) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.85) 100%);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  }
+
+  .header-border-glow {
+    position: relative;
+  }
+  .header-border-glow::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 191, 0, 0.15) 15%,
+      rgba(255, 215, 0, 0.5) 50%,
+      rgba(255, 191, 0, 0.15) 85%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: border-shimmer 8s ease-in-out infinite;
+  }
+
+  /* ── Shimmer text effect ───────────────────────────────────── */
+  .brand-shimmer {
+    background: linear-gradient(
+      105deg,
+      #d4a030 0%,
+      #f5d680 20%,
+      #fffbe6 40%,
+      #f5d680 50%,
+      #d4a030 65%,
+      #f5d680 80%,
+      #d4a030 100%
+    );
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-shimmer 6s ease-in-out infinite;
+  }
+
+  @keyframes text-shimmer {
+    0% { background-position: 100% 50%; }
+    100% { background-position: -50% 50%; }
+  }
+
+  @keyframes border-shimmer {
+    0%, 100% { background-position: 200% 0; }
+    50% { background-position: -100% 0; }
+  }
+
+  /* ── Decorative flanker stars ───────────────────────────────── */
+  .flanker-glow {
+    filter: drop-shadow(0 0 6px rgba(255, 191, 0, 0.6))
+            drop-shadow(0 0 12px rgba(255, 191, 0, 0.3));
+    animation: flanker-pulse 4s ease-in-out infinite;
+  }
+  .flanker-glow-delay {
+    animation-delay: 2s;
+  }
+
+  @keyframes flanker-pulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
 }
 
 @layer components {
