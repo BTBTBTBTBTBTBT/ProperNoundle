@@ -280,16 +280,9 @@ function App() {
 
         <main className="flex-1 flex flex-col items-center justify-center px-4 py-6">
           <div className="w-full max-w-2xl">
-            {(gameMode === 'sequence' || gameMode === 'category') && sequenceState && (
+            {gameMode === 'sequence' && sequenceState && (
               <div className="text-center mb-4 bg-black/20 backdrop-blur-sm rounded-lg p-3 border border-white/10 relative z-10">
                 <div className="text-lg font-semibold text-white">
-                  {gameMode === 'category' && selectedCategory && (
-                    <span className="capitalize">
-                      {selectedCategory === 'videogames' ? 'Video Games' :
-                       selectedCategory === 'currentevents' ? 'Current Events' :
-                       selectedCategory}{' '}
-                    </span>
-                  )}
                   Sequence Progress: {sequenceState.currentPuzzleIndex + 1} / {sequenceState.totalPuzzles}
                 </div>
                 <div className="text-sm text-white/70">
@@ -301,13 +294,17 @@ function App() {
             <div className="text-center mb-4 space-y-3 relative z-10">
               <div className="inline-flex flex-col items-center bg-gradient-to-br from-amber-500/20 to-amber-600/20 backdrop-blur-sm rounded-xl px-6 py-3 border border-amber-400/30 shadow-lg shadow-amber-500/20">
                 <div className="text-xs font-bold text-amber-300 uppercase tracking-[0.25em] mb-1 opacity-90">
-                  {gameMode === 'category' && selectedCategory ? 'Category' : 'Theme'}
+                  {gameMode === 'category' ? 'Category' : 'Theme'}
                 </div>
                 <div className="text-lg font-bold text-white capitalize tracking-wide">
                   {gameMode === 'category' && selectedCategory ? (
                     selectedCategory === 'videogames' ? 'Video Games' :
                     selectedCategory === 'currentevents' ? 'Current Events' :
                     selectedCategory
+                  ) : game.puzzle.themeCategory ? (
+                    game.puzzle.themeCategory === 'videogames' ? 'Video Games' :
+                    game.puzzle.themeCategory === 'currentevents' ? 'Current Events' :
+                    game.puzzle.themeCategory
                   ) : game.puzzle.category}
                 </div>
               </div>

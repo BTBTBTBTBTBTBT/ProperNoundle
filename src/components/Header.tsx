@@ -99,8 +99,7 @@ export default function Header({
                   aria-label="Categories"
                 >
                   <Grid3x3 className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden xs:inline">Categories</span>
-                  <span className="xs:hidden">Cat</span>
+                  Categories
                 </button>
                 <CategoryDropdown
                   isOpen={showCategoryDropdown}
