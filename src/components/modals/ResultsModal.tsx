@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Share2, Check, X, Sparkles } from 'lucide-react';
 import { Guess, Category, GameMode } from '../../types/game';
 import { generateDailyShareText, generateShareText, copyToClipboard } from '../../utils/share';
+import { fetchWikipediaImage } from '../../utils/wikipedia';
 
 interface ResultsModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface ResultsModalProps {
   puzzleNumber?: number;
   currentStreak?: number;
   onPlayAgain?: () => void;
+  wikiTitle?: string;
 }
 
 export default function ResultsModal({
@@ -27,8 +29,11 @@ export default function ResultsModal({
   puzzleNumber,
   currentStreak,
   onPlayAgain,
+  wikiTitle,
 }: ResultsModalProps) {
   const [copied, setCopied] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleShare = async () => {
     const shareText = gameMode === 'daily' && puzzleNumber
@@ -41,6 +46,16 @@ export default function ResultsModal({
       setTimeout(() => setCopied(false), 2000);
     }
   };
+
+  useEffect(() => {
+    if (isOpen && answer) {
+      setImageUrl(null);
+      setImageLoaded(false);
+      fetchWikipediaImage(answer, wikiTitle).then(url => {
+        if (url) setImageUrl(url);
+      });
+    }
+  }, [isOpen, answer, wikiTitle]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -107,8 +122,22 @@ export default function ResultsModal({
 
         <div className="px-6 py-6">
           <div className="space-y-4 text-center">
-            <div className="text-4xl mb-2">
-              {won ? '🎉' : '😔'}
+            <div className="mb-2 flex justify-center">
+              {imageUrl ? (
+                <div className="relative w-28 h-28 rounded-xl overflow-hidden shadow-lg border border-white/10">
+                  <img
+                    src={imageUrl}
+                    alt={answer}
+                    className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    onLoad={() => setImageLoaded(true)}
+                  />
+                  {!imageLoaded && (
+                    <div className="absolute inset-0 bg-white/5 animate-pulse rounded-xl" />
+                  )}
+                </div>
+              ) : (
+                <span className="text-4xl">{won ? '🎉' : '😔'}</span>
+              )}
             </div>
 
             <div>

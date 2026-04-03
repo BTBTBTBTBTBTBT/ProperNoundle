@@ -4,6 +4,7 @@ interface WikiSummary {
   extract: string;
   title: string;
   description?: string;
+  thumbnail?: { source: string; width: number; height: number };
 }
 
 /**
@@ -41,6 +42,31 @@ export async function fetchWikipediaHint(
  * 1. Trims to first 2 sentences
  * 2. Replaces occurrences of the answer name with "this subject" / "they" etc.
  */
+/**
+ * Fetches the Wikipedia thumbnail image URL for a puzzle answer.
+ */
+export async function fetchWikipediaImage(
+  displayName: string,
+  wikiTitle?: string
+): Promise<string | null> {
+  const title = encodeURIComponent(
+    (wikiTitle || displayName).replace(/\s+/g, '_')
+  );
+
+  try {
+    const response = await fetch(`${WIKI_API}/${title}`, {
+      headers: { Accept: 'application/json' },
+    });
+
+    if (!response.ok) return null;
+
+    const data: WikiSummary = await response.json();
+    return data.thumbnail?.source || null;
+  } catch {
+    return null;
+  }
+}
+
 function sanitizeHint(extract: string, displayName: string): string {
   // Get first 2 sentences
   const sentences = extract.match(/[^.!?]+[.!?]+/g) || [extract];

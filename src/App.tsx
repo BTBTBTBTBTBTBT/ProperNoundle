@@ -407,6 +407,7 @@ function App() {
           puzzleNumber={gameMode === 'daily' ? getDailyPuzzleNumber() : undefined}
           currentStreak={gameMode === 'daily' ? stats.daily.currentStreak : undefined}
           onPlayAgain={handlePlayAgain}
+          wikiTitle={game.puzzle.wikiTitle}
         />
 
         <SettingsModal
