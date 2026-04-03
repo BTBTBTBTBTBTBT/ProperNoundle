@@ -13,6 +13,12 @@ interface HeaderProps {
   categoryStats: Record<ThemeCategory, { gamesPlayed: number; gamesWon: number }>;
 }
 
+const MODES: { id: GameMode; label: string }[] = [
+  { id: 'daily', label: 'Daily' },
+  { id: 'practice', label: 'Practice' },
+  { id: 'sequence', label: 'Sequence' },
+];
+
 export default function Header({
   gameMode,
   onModeChange,
@@ -24,112 +30,92 @@ export default function Header({
 }: HeaderProps) {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const categoryButtonRef = useRef<HTMLButtonElement>(null);
+
   return (
-    <header className="border-b border-white/10 bg-black/30 backdrop-blur-md relative z-50">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3">
-        <div className="flex items-center justify-between gap-2">
+    <header className="border-b border-white/10 bg-black/40 backdrop-blur-md relative z-50">
+      <div className="max-w-2xl mx-auto px-2 sm:px-3 py-1.5 sm:py-2">
+        {/* Top row: icons + title */}
+        <div className="flex items-center justify-between mb-1.5">
           <button
             onClick={onShowHelp}
-            className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
+            className="p-1 hover:bg-white/10 rounded-lg transition-colors"
             aria-label="How to play"
           >
-            <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-white/90" />
+            <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white/70" />
           </button>
 
-          <div className="flex flex-col items-center flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <Sparkles className="w-5 h-5 sm:w-7 sm:h-7 text-amber-400 animate-pulse flex-shrink-0" style={{ filter: 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.6))' }} />
-              <h1 className="brand-font text-xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight whitespace-nowrap" style={{ textShadow: '0 0 20px rgba(255, 215, 0, 0.5)' }}>
-                ProperNoundle
-              </h1>
-              <Sparkles className="w-5 h-5 sm:w-7 sm:h-7 text-amber-400 animate-pulse flex-shrink-0" style={{ filter: 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.6))' }} />
-            </div>
-            <div className="flex gap-1.5 sm:gap-2 mt-2 flex-wrap justify-center">
-              <button
-                onClick={() => {
-                  setShowCategoryDropdown(false);
-                  onModeChange('daily');
-                }}
-                className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
-                  gameMode === 'daily'
-                    ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white shadow-lg shadow-yellow-500/50'
-                    : 'bg-white/10 text-white/80 hover:bg-white/20 border border-white/20'
-                }`}
-                aria-label="Daily mode"
-              >
-                Daily
-              </button>
-              <button
-                onClick={() => {
-                  setShowCategoryDropdown(false);
-                  onModeChange('practice');
-                }}
-                className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
-                  gameMode === 'practice'
-                    ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white shadow-lg shadow-yellow-500/50'
-                    : 'bg-white/10 text-white/80 hover:bg-white/20 border border-white/20'
-                }`}
-                aria-label="Practice mode"
-              >
-                Practice
-              </button>
-              <button
-                onClick={() => {
-                  setShowCategoryDropdown(false);
-                  onModeChange('sequence');
-                }}
-                className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
-                  gameMode === 'sequence' && !showCategoryDropdown
-                    ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white shadow-lg shadow-yellow-500/50'
-                    : 'bg-white/10 text-white/80 hover:bg-white/20 border border-white/20'
-                }`}
-                aria-label="Sequence mode"
-              >
-                Sequence
-              </button>
-              <div className="relative">
-                <button
-                  ref={categoryButtonRef}
-                  onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center gap-1 ${
-                    gameMode === 'category' || showCategoryDropdown
-                      ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white shadow-lg shadow-yellow-500/50'
-                      : 'bg-white/10 text-white/80 hover:bg-white/20 border border-white/20'
-                  }`}
-                  aria-label="Categories"
-                >
-                  <Grid3x3 className="w-3 h-3 sm:w-4 sm:h-4" />
-                  Categories
-                </button>
-                <CategoryDropdown
-                  isOpen={showCategoryDropdown}
-                  onClose={() => setShowCategoryDropdown(false)}
-                  onSelectCategory={(category) => {
-                    onCategorySelect(category);
-                    setShowCategoryDropdown(false);
-                  }}
-                  categoryStats={categoryStats}
-                  buttonRef={categoryButtonRef}
-                />
-              </div>
-            </div>
+          <div className="flex items-center gap-1">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-amber-400 flex-shrink-0" style={{ filter: 'drop-shadow(0 0 6px rgba(255, 215, 0, 0.5))' }} />
+            <h1 className="brand-font text-[15px] sm:text-2xl font-bold text-white tracking-tight whitespace-nowrap" style={{ textShadow: '0 0 15px rgba(255, 215, 0, 0.4)' }}>
+              ProperNoundle
+            </h1>
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-amber-400 flex-shrink-0" style={{ filter: 'drop-shadow(0 0 6px rgba(255, 215, 0, 0.5))' }} />
           </div>
 
-          <div className="flex gap-0.5 sm:gap-1 flex-shrink-0">
+          <div className="flex">
             <button
               onClick={onShowStats}
-              className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-1 hover:bg-white/10 rounded-lg transition-colors"
               aria-label="Statistics"
             >
-              <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-white/90" />
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-white/70" />
             </button>
             <button
               onClick={onShowSettings}
-              className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-1 hover:bg-white/10 rounded-lg transition-colors"
               aria-label="Settings"
             >
-              <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-white/90" />
+              <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-white/70" />
             </button>
+          </div>
+        </div>
+
+        {/* Mode selector — single row segmented control */}
+        <div className="flex items-center gap-1 justify-center overflow-x-auto">
+          <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10 flex-shrink-0">
+            {MODES.map(mode => (
+              <button
+                key={mode.id}
+                onClick={() => {
+                  setShowCategoryDropdown(false);
+                  onModeChange(mode.id);
+                }}
+                className={`px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-semibold rounded-md transition-all ${
+                  gameMode === mode.id
+                    ? 'bg-amber-500 text-white shadow-sm'
+                    : 'text-white/60 hover:text-white/90 hover:bg-white/5'
+                }`}
+              >
+                {mode.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="relative flex-shrink-0">
+            <button
+              ref={categoryButtonRef}
+              onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+              className={`flex items-center gap-1 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-semibold rounded-lg transition-all border ${
+                gameMode === 'category' || showCategoryDropdown
+                  ? 'bg-amber-500 text-white border-amber-400/50 shadow-sm'
+                  : 'bg-white/5 text-white/60 border-white/10 hover:text-white/90 hover:bg-white/10'
+              }`}
+              aria-label="Categories"
+            >
+              <Grid3x3 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span className="hidden sm:inline">Categories</span>
+              <span className="sm:hidden">Cat.</span>
+            </button>
+            <CategoryDropdown
+              isOpen={showCategoryDropdown}
+              onClose={() => setShowCategoryDropdown(false)}
+              onSelectCategory={(category) => {
+                onCategorySelect(category);
+                setShowCategoryDropdown(false);
+              }}
+              categoryStats={categoryStats}
+              buttonRef={categoryButtonRef}
+            />
           </div>
         </div>
       </div>

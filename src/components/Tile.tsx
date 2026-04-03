@@ -52,23 +52,23 @@ export default function Tile({ letter, state, index, highContrast = false, shoul
   const baseClasses = 'flex items-center justify-center font-bold uppercase transition-transform duration-100';
 
   const getBorderClass = () => {
-    if (currentState === 'empty') return 'border-2 border-white/30';
-    if (currentState === 'tbd') return 'border-2 border-white/50';
-    return 'border-2 border-transparent';
+    if (currentState === 'empty') return 'border border-white/15';
+    if (currentState === 'tbd') return 'border-2 border-white/40';
+    return 'border border-transparent';
   };
 
   const stateClasses = {
-    empty: 'bg-transparent text-white',
+    empty: 'bg-white/[0.04] text-white',
     tbd: 'bg-white/10 text-white tile-pop',
     correct: highContrast ? 'bg-orange-500 text-white' : 'bg-green-600 text-white',
     present: highContrast ? 'bg-blue-500 text-white' : 'bg-yellow-500 text-white',
-    absent: 'bg-gray-700 text-white',
+    absent: 'bg-gray-700/80 text-white/70',
     'hint-used': 'bg-gray-800/60 text-gray-500',
   };
 
   return (
     <div
-      className={`${baseClasses} ${getBorderClass()} ${stateClasses[currentState]} ${isFlipping ? 'tile-flip' : ''}`}
+      className={`${baseClasses} ${getBorderClass()} ${stateClasses[currentState]} ${isFlipping ? 'tile-flip' : ''} rounded-sm`}
       style={{ width: `${size}px`, height: `${size}px`, fontSize: `${fontSize}px` }}
       role="gridcell"
       aria-label={`${letter || 'empty'}, ${currentState}`}

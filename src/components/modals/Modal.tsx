@@ -31,18 +31,18 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
     >
       <div
-        className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-white/10"
+        className="bg-gray-900 rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] overflow-y-auto border border-white/10"
         onClick={e => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-gradient-to-r from-amber-500/20 to-amber-600/20 backdrop-blur-md border-b border-white/10 px-6 py-4 flex items-center justify-between">
-          <h2 id="modal-title" className="brand-font text-xl font-bold text-white" style={{ textShadow: '0 0 10px rgba(255, 215, 0, 0.3)' }}>
+        <div className="sticky top-0 bg-gray-900/95 backdrop-blur-sm border-b border-white/10 px-5 py-3 flex items-center justify-between z-10">
+          <h2 id="modal-title" className="brand-font text-lg font-bold text-white">
             {title}
           </h2>
           <button
@@ -50,10 +50,10 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
             className="p-1 hover:bg-white/10 rounded-lg transition-colors"
             aria-label="Close modal"
           >
-            <X className="w-6 h-6 text-white/90" />
+            <X className="w-5 h-5 text-white/60 hover:text-white" />
           </button>
         </div>
-        <div className="px-6 py-4">{children}</div>
+        <div className="px-5 py-4">{children}</div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Share2, Check, X, Sparkles } from 'lucide-react';
+import { Share2, Check, X } from 'lucide-react';
 import { Guess, Category, GameMode } from '../../types/game';
 import { generateDailyShareText, generateShareText, copyToClipboard } from '../../utils/share';
 import { fetchWikipediaImage } from '../../utils/wikipedia';
@@ -59,9 +59,7 @@ export default function ResultsModal({
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
+      if (e.key === 'Escape') onClose();
     };
 
     if (isOpen) {
@@ -79,120 +77,92 @@ export default function ResultsModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="results-title"
     >
       <div
-        className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-white/10"
+        className="bg-gray-900 rounded-xl shadow-2xl max-w-sm w-full border border-white/10"
         onClick={e => e.stopPropagation()}
       >
-        <div className="relative bg-gradient-to-b from-black/40 to-transparent backdrop-blur-sm px-6 py-5 border-b border-white/5">
-          <div className="absolute inset-0 bg-gradient-radial from-amber-500/5 via-transparent to-transparent opacity-50"></div>
-
-          <div className="relative grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-            <div></div>
-
-            <div className="flex items-center justify-center gap-2">
-              {won && (
-                <Sparkles className="w-5 h-5 text-amber-400" style={{ filter: 'drop-shadow(0 0 6px rgba(255, 215, 0, 0.5))' }} />
-              )}
-              <h2
-                id="results-title"
-                className="brand-font text-2xl font-bold text-white whitespace-nowrap"
-                style={{ textShadow: won ? '0 0 15px rgba(255, 215, 0, 0.2)' : 'none' }}
-              >
-                {won ? 'Congratulations!' : 'Better luck next time!'}
-              </h2>
-            </div>
-
-            <div className="flex justify-end">
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-white/10 rounded-full transition-all duration-200 group"
-                aria-label="Close"
-              >
-                <X className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
-              </button>
-            </div>
-          </div>
+        {/* Header */}
+        <div className="px-5 py-3 border-b border-white/10 flex items-center justify-between">
+          <h2 id="results-title" className="brand-font text-lg font-bold text-white">
+            {won ? 'You got it!' : 'Not this time'}
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5 text-white/60 hover:text-white" />
+          </button>
         </div>
 
-        <div className="px-6 py-6">
-          <div className="space-y-4 text-center">
-            <div className="mb-2 flex justify-center">
-              {imageUrl ? (
-                <div className="relative max-w-[200px] rounded-xl overflow-hidden shadow-lg border border-white/10">
-                  <img
-                    src={imageUrl}
-                    alt={answer}
-                    className={`w-full h-auto transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-                    onLoad={() => setImageLoaded(true)}
-                  />
-                  {!imageLoaded && (
-                    <div className="w-28 h-28 bg-white/5 animate-pulse rounded-xl" />
-                  )}
-                </div>
-              ) : (
-                <span className="text-4xl">{won ? '🎉' : '😔'}</span>
-              )}
-            </div>
-
-            <div>
-              <p className="text-lg font-semibold text-white mb-2">
-                {won ? `You solved it in ${guesses.length} ${guesses.length === 1 ? 'guess' : 'guesses'}!` : 'The answer was:'}
-              </p>
-              <p className="text-2xl font-bold text-amber-400" style={{ textShadow: '0 0 15px rgba(255, 215, 0, 0.4)' }}>{answer}</p>
-              <p className="text-sm text-white/70 mt-1 capitalize">Category: {category}</p>
-            </div>
-
-            {won && currentStreak && currentStreak > 1 && (
-              <div className="bg-gradient-to-r from-orange-500/20 to-amber-500/20 border border-orange-400/30 rounded-lg p-3 backdrop-blur-sm">
-                <p className="text-amber-300 font-semibold">
-                  🔥 {currentStreak} day streak!
-                </p>
-              </div>
-            )}
-
-            <div className="flex flex-col gap-2 pt-4">
-              {gameMode !== 'daily' && (
-                <button
-                  onClick={() => {
-                    onClose();
-                    onPlayAgain?.();
-                  }}
-                  className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-3 px-6 rounded-lg transition-all shadow-lg shadow-amber-500/30 border border-amber-400/50"
-                >
-                  Play Again
-                </button>
-              )}
-
-              <button
-                onClick={handleShare}
-                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-all shadow-lg shadow-green-500/30 flex items-center justify-center gap-2 border border-green-400/50"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-5 h-5" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Share2 className="w-5 h-5" />
-                    Share Results
-                  </>
+        {/* Body */}
+        <div className="px-5 py-4 text-center space-y-3">
+          {/* Wikipedia image */}
+          <div className="flex justify-center">
+            {imageUrl ? (
+              <div className="relative max-w-[180px] rounded-lg overflow-hidden border border-white/10">
+                <img
+                  src={imageUrl}
+                  alt={answer}
+                  className={`w-full h-auto transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  onLoad={() => setImageLoaded(true)}
+                />
+                {!imageLoaded && (
+                  <div className="w-24 h-24 bg-white/5 animate-pulse rounded-lg" />
                 )}
-              </button>
-            </div>
-
-            {gameMode === 'daily' && (
-              <p className="text-sm text-white/70 pt-2">
-                Come back tomorrow for a new puzzle!
-              </p>
+              </div>
+            ) : (
+              <span className="text-3xl">{won ? '🎉' : '😔'}</span>
             )}
           </div>
+
+          {/* Answer reveal */}
+          <div>
+            <p className="text-sm text-white/60 mb-1">
+              {won ? `Solved in ${guesses.length} ${guesses.length === 1 ? 'guess' : 'guesses'}` : 'The answer was'}
+            </p>
+            <p className="text-xl font-bold text-amber-400">{answer}</p>
+            <p className="text-xs text-white/40 mt-0.5 capitalize">{category}</p>
+          </div>
+
+          {/* Streak badge */}
+          {won && currentStreak && currentStreak > 1 && (
+            <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500/15 border border-orange-400/25 text-sm text-amber-300 font-semibold">
+              🔥 {currentStreak} day streak
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex gap-2 pt-2">
+            {gameMode !== 'daily' && (
+              <button
+                onClick={() => { onClose(); onPlayAgain?.(); }}
+                className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors text-sm"
+              >
+                Play Again
+              </button>
+            )}
+            <button
+              onClick={handleShare}
+              className={`${gameMode === 'daily' ? 'flex-1' : ''} bg-white/10 hover:bg-white/15 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors text-sm flex items-center justify-center gap-1.5 border border-white/10`}
+            >
+              {copied ? (
+                <><Check className="w-4 h-4" /> Copied</>
+              ) : (
+                <><Share2 className="w-4 h-4" /> Share</>
+              )}
+            </button>
+          </div>
+
+          {gameMode === 'daily' && (
+            <p className="text-xs text-white/40">Come back tomorrow for a new puzzle!</p>
+          )}
         </div>
       </div>
     </div>

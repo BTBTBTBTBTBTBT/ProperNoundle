@@ -43,26 +43,24 @@ export default memo(function Keyboard({
   }, [onKeyPress, onEnter, onBackspace, disabled]);
 
   const getKeyClasses = (key: string, state?: TileState) => {
-    const baseClasses = 'rounded font-bold transition-all duration-75 active:scale-95 uppercase select-none';
+    const base = 'kbd-key';
 
     if (key === 'ENTER' || key === 'BACK') {
-      return `${baseClasses} px-3 sm:px-4 py-4 text-xs sm:text-sm bg-slate-500 hover:bg-slate-400 active:bg-slate-600 text-white`;
+      return `${base} kbd-action`;
     }
 
-    if (!state || state === 'empty') {
-      return `${baseClasses} px-2 sm:px-3 py-4 text-sm sm:text-base bg-slate-400 hover:bg-slate-300 active:bg-slate-500 text-white`;
+    if (!state || state === 'empty' || state === 'tbd') {
+      return `${base} kbd-default`;
     }
 
-    const stateClasses = {
-      'correct': highContrast ? 'bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white' : 'bg-green-600 hover:bg-green-500 active:bg-green-700 text-white',
-      'present': highContrast ? 'bg-blue-500 hover:bg-blue-400 active:bg-blue-600 text-white' : 'bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-white',
-      'absent': 'bg-gray-700 hover:bg-gray-600 active:bg-gray-800 text-white',
-      'empty': 'bg-slate-400 hover:bg-slate-300 active:bg-slate-500 text-white',
-      'tbd': 'bg-slate-400 hover:bg-slate-300 active:bg-slate-500 text-white',
-      'hint-used': 'bg-gray-700 hover:bg-gray-600 active:bg-gray-800 text-white',
+    const stateMap = {
+      'correct': highContrast ? 'kbd-correct-hc' : 'kbd-correct',
+      'present': highContrast ? 'kbd-present-hc' : 'kbd-present',
+      'absent': 'kbd-absent',
+      'hint-used': 'kbd-absent',
     } as const;
 
-    return `${baseClasses} px-2 sm:px-3 py-4 text-sm sm:text-base ${stateClasses[state]}`;
+    return `${base} ${stateMap[state]}`;
   };
 
   const handleClick = (key: string) => {
@@ -78,9 +76,10 @@ export default memo(function Keyboard({
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-2 pb-4">
+    <div className="w-full max-w-lg mx-auto px-1 pb-2 sm:pb-4">
       {KEYBOARD_ROWS.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex gap-1 justify-center mb-1">
+        <div key={rowIndex} className="flex gap-[3px] sm:gap-1 justify-center mb-[3px] sm:mb-1">
+          {rowIndex === 1 && <div className="flex-[0.5]" />}
           {row.map(key => {
             const state = letterStates[key];
             return (
@@ -92,13 +91,14 @@ export default memo(function Keyboard({
                 aria-label={key === 'BACK' ? 'Backspace' : key}
               >
                 {key === 'BACK' ? (
-                  <Delete className="w-5 h-5" />
+                  <Delete className="w-4 h-4 sm:w-5 sm:h-5" />
                 ) : (
                   key
                 )}
               </button>
             );
           })}
+          {rowIndex === 1 && <div className="flex-[0.5]" />}
         </div>
       ))}
     </div>

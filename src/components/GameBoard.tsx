@@ -64,13 +64,13 @@ export default memo(function GameBoard({
       const totalTiles = wordGroups.reduce((sum, count) => sum + count, 0);
       const totalGroupGaps = (wordGroups.length - 1) * wordGroupGap;
       const totalTileGaps = (totalTiles - wordGroups.length) * tileGap;
-      const horizontalPadding = 64;
+      const horizontalPadding = viewportWidth < 640 ? 16 : 64;
 
       const availableWidth = viewportWidth - horizontalPadding - totalGroupGaps - totalTileGaps;
       const maxTileWidthFromWidth = availableWidth / totalTiles;
 
       const calculatedSize = Math.min(maxTileHeightFromHeight, maxTileWidthFromWidth, 56);
-      const finalSize = Math.max(calculatedSize, 28);
+      const finalSize = Math.max(calculatedSize, 20);
 
       setTileSize(finalSize);
     };
@@ -182,7 +182,7 @@ export default memo(function GameBoard({
   };
 
   return (
-    <div className="flex flex-col gap-2 my-6" role="grid">
+    <div className="flex flex-col gap-1.5 my-2 sm:my-4" role="grid">
       {Array(maxGuesses)
         .fill(0)
         .map((_, i) => renderRow(i))}
