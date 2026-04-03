@@ -68,11 +68,17 @@ export async function fetchWikipediaImage(
 }
 
 function sanitizeHint(extract: string, displayName: string): string {
+  // Protect abbreviations like "U.S.", "U.K.", "D.C." from sentence splitting
+  let protected_ = extract.replace(/\b([A-Z])\.\s?([A-Z])\.(\s?[A-Z]\.)?/g, (m) => m.replace(/\./g, '###'));
+
   // Get first 2 sentences
-  const sentences = extract.match(/[^.!?]+[.!?]+/g) || [extract];
+  const sentences = protected_.match(/[^.!?]+[.!?]+/g) || [protected_];
   let hint = sentences.slice(0, 2).join(' ').trim();
 
-  // Build patterns to redact: full name, each individual word (>2 chars)
+  // Restore abbreviation periods
+  hint = hint.replace(/###/g, '.');
+
+  // Build patterns to redact: full name first, then each individual word (>2 chars)
   const nameParts = displayName.split(/\s+/).filter(p => p.length > 2);
   const patterns = [displayName, ...nameParts];
 
@@ -84,6 +90,9 @@ function sanitizeHint(extract: string, displayName: string): string {
 
   // Collapse consecutive redactions
   hint = hint.replace(/(______\s*)+/g, '______');
+
+  // Ensure space after redaction if followed by a word character
+  hint = hint.replace(/______(\w)/g, '______ $1');
 
   return hint;
 }
