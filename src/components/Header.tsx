@@ -68,7 +68,7 @@ export default function Header({
             className="p-1.5 hover:bg-white/10 rounded-lg transition-colors group"
             aria-label="How to play"
           >
-            <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white/50 group-hover:text-white/80 transition-colors" />
+            <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400/70 group-hover:text-amber-300 transition-colors" style={{ filter: 'drop-shadow(0 0 4px rgba(255, 191, 0, 0.4))' }} />
           </button>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
@@ -85,14 +85,14 @@ export default function Header({
               className="p-1.5 hover:bg-white/10 rounded-lg transition-colors group"
               aria-label="Statistics"
             >
-              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-white/50 group-hover:text-white/80 transition-colors" />
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400/70 group-hover:text-amber-300 transition-colors" style={{ filter: 'drop-shadow(0 0 4px rgba(255, 191, 0, 0.4))' }} />
             </button>
             <button
               onClick={onShowSettings}
               className="p-1.5 hover:bg-white/10 rounded-lg transition-colors group"
               aria-label="Settings"
             >
-              <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-white/50 group-hover:text-white/80 transition-colors" />
+              <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400/70 group-hover:text-amber-300 transition-colors" style={{ filter: 'drop-shadow(0 0 4px rgba(255, 191, 0, 0.4))' }} />
             </button>
           </div>
         </div>
