@@ -20,7 +20,6 @@ export default memo(function GameBoard({
   maxGuesses,
   answerLength,
   highContrast = false,
-  showFormat = false,
   answerDisplay = '',
   shouldShake = false,
 }: GameBoardProps) {
@@ -28,6 +27,7 @@ export default memo(function GameBoard({
   const [shouldFlipRow, setShouldFlipRow] = useState(-1);
   const [tileSize, setTileSize] = useState(56);
   const resizeTimer = useRef<number | null>(null);
+  const boardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (guesses.length > lastGuessCount) {
@@ -45,17 +45,16 @@ export default memo(function GameBoard({
 
   useEffect(() => {
     const calculateTileSize = () => {
-      const viewportHeight = window.innerHeight;
-      const viewportWidth = window.innerWidth;
+      // Use visual viewport for accurate mobile Safari height
+      const vv = window.visualViewport;
+      const viewportHeight = vv ? vv.height : window.innerHeight;
+      const viewportWidth = vv ? vv.width : window.innerWidth;
 
-      const headerHeight = 80;
-      const keyboardHeight = 180;
-      const verticalMargins = 150;
-      const formatHeight = showFormat ? 60 : 0;
+      // Reserve space for header (~90px), keyboard (~170px), toolbar+tag (~70px), padding (~30px)
+      const reservedHeight = 360;
+      const availableHeight = viewportHeight - reservedHeight;
 
-      const availableHeight = viewportHeight - headerHeight - keyboardHeight - verticalMargins - formatHeight;
-
-      const rowGap = 8;
+      const rowGap = 6;
       const totalRowGaps = (maxGuesses - 1) * rowGap;
       const maxTileHeightFromHeight = (availableHeight - totalRowGaps) / maxGuesses;
 
@@ -64,13 +63,13 @@ export default memo(function GameBoard({
       const totalTiles = wordGroups.reduce((sum, count) => sum + count, 0);
       const totalGroupGaps = (wordGroups.length - 1) * wordGroupGap;
       const totalTileGaps = (totalTiles - wordGroups.length) * tileGap;
-      const horizontalPadding = viewportWidth < 640 ? 16 : 64;
+      const horizontalPadding = viewportWidth < 640 ? 32 : 64;
 
       const availableWidth = viewportWidth - horizontalPadding - totalGroupGaps - totalTileGaps;
       const maxTileWidthFromWidth = availableWidth / totalTiles;
 
       const calculatedSize = Math.min(maxTileHeightFromHeight, maxTileWidthFromWidth, 56);
-      const finalSize = Math.max(calculatedSize, 20);
+      const finalSize = Math.max(calculatedSize, 16);
 
       setTileSize(finalSize);
     };
@@ -83,11 +82,13 @@ export default memo(function GameBoard({
     };
 
     window.addEventListener('resize', debouncedResize);
+    window.visualViewport?.addEventListener('resize', debouncedResize);
     return () => {
       window.removeEventListener('resize', debouncedResize);
+      window.visualViewport?.removeEventListener('resize', debouncedResize);
       if (resizeTimer.current) clearTimeout(resizeTimer.current);
     };
-  }, [maxGuesses, wordGroups, showFormat]);
+  }, [maxGuesses, wordGroups]);
 
   const renderRow = (index: number) => {
     const shouldFlip = shouldFlipRow === index;
@@ -182,7 +183,7 @@ export default memo(function GameBoard({
   };
 
   return (
-    <div className="flex flex-col gap-1.5 my-2 sm:my-4" role="grid">
+    <div ref={boardRef} className="flex flex-col gap-1.5 my-1 sm:my-4" role="grid">
       {Array(maxGuesses)
         .fill(0)
         .map((_, i) => renderRow(i))}

@@ -259,10 +259,10 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-x-hidden">
+    <div className="min-h-[100dvh] flex flex-col relative overflow-x-hidden">
       <div className="ambient-glow" />
 
-      <div className="relative z-10 flex flex-col min-h-screen">
+      <div className="relative z-10 flex flex-col min-h-[100dvh]">
         <Header
           gameMode={gameMode}
           onModeChange={handleModeChange}
@@ -273,74 +273,81 @@ function App() {
           categoryStats={getAllCategoryStats()}
         />
 
-        <main className="flex-1 flex flex-col items-center px-2 sm:px-4 py-2">
+        <main className="flex-1 flex flex-col items-center px-2 sm:px-4 py-1">
           <div className="w-full max-w-2xl flex flex-col flex-1">
-            {/* Theme tag + sequence progress — compact inline */}
-            <div className="flex items-center justify-center gap-2 mb-1 relative z-10">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 border border-amber-400/25 text-amber-300 capitalize">
-                {gameMode === 'category' && selectedCategory ? (
-                  selectedCategory === 'videogames' ? 'Video Games' :
-                  selectedCategory === 'currentevents' ? 'Current Events' :
-                  selectedCategory
-                ) : game.puzzle.themeCategory ? (
-                  game.puzzle.themeCategory === 'videogames' ? 'Video Games' :
-                  game.puzzle.themeCategory === 'currentevents' ? 'Current Events' :
-                  game.puzzle.themeCategory
-                ) : game.puzzle.category}
-              </span>
-              {gameMode === 'sequence' && sequenceState && (
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-white/5 border border-white/10 text-white/70">
-                  {sequenceState.currentPuzzleIndex + 1}/{sequenceState.totalPuzzles}
-                  <span className="text-green-400">{sequenceState.results.filter(r => r.won).length} solved</span>
+            {/* Top content: tag + toolbar + board */}
+            <div className="flex flex-col">
+              {/* Theme tag + sequence progress — compact inline */}
+              <div className="flex items-center justify-center gap-2 mb-1 relative z-10 flex-shrink-0">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 border border-amber-400/25 text-amber-300 capitalize">
+                  {gameMode === 'category' && selectedCategory ? (
+                    selectedCategory === 'videogames' ? 'Video Games' :
+                    selectedCategory === 'currentevents' ? 'Current Events' :
+                    selectedCategory
+                  ) : game.puzzle.themeCategory ? (
+                    game.puzzle.themeCategory === 'videogames' ? 'Video Games' :
+                    game.puzzle.themeCategory === 'currentevents' ? 'Current Events' :
+                    game.puzzle.themeCategory
+                  ) : game.puzzle.category}
                 </span>
+                {gameMode === 'sequence' && sequenceState && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-white/5 border border-white/10 text-white/70">
+                    {sequenceState.currentPuzzleIndex + 1}/{sequenceState.totalPuzzles}
+                    <span className="text-green-400">{sequenceState.results.filter(r => r.won).length} solved</span>
+                  </span>
+                )}
+              </div>
+
+              {/* Help toolbar — compact single row */}
+              {game.gameStatus === 'playing' && (
+                <div className="flex items-center justify-center gap-1.5 mb-1 relative z-10 flex-shrink-0">
+                  <button
+                    onClick={onFetchClue}
+                    disabled={hints.hintUsed || hints.loadingHint}
+                    className={`btn-hint ${hints.hintUsed ? 'btn-hint-used' : 'bg-white/8 hover:bg-white/12 text-white/80 hover:text-white border-white/10'}`}
+                  >
+                    {hints.loadingHint ? '...' : hints.hintUsed ? 'Clue Used' : 'Clue'}
+                  </button>
+                  <button
+                    onClick={onRevealVowel}
+                    disabled={hints.vowelUsed}
+                    className={`btn-hint ${hints.vowelUsed ? 'btn-hint-used' : 'bg-white/8 hover:bg-white/12 text-white/80 hover:text-white border-white/10'}`}
+                  >
+                    {hints.vowelUsed ? hints.vowelRevealed : 'Vowel'}
+                  </button>
+                  <button
+                    onClick={onRevealConsonant}
+                    disabled={hints.consonantUsed}
+                    className={`btn-hint ${hints.consonantUsed ? 'btn-hint-used' : 'bg-white/8 hover:bg-white/12 text-white/80 hover:text-white border-white/10'}`}
+                  >
+                    {hints.consonantUsed ? hints.consonantRevealed : 'Consonant'}
+                  </button>
+                </div>
               )}
+
+              {/* Clue text */}
+              {hints.hint && (
+                <div className="max-w-md mx-auto mb-1 bg-blue-500/10 rounded-lg px-3 py-2 border border-blue-400/20 relative z-10 flex-shrink-0">
+                  <div className="text-white/80 text-xs leading-relaxed"><span className="font-semibold text-blue-300">Clue: </span>{hints.hint}</div>
+                </div>
+              )}
+
+              <GameBoard
+                guesses={game.guesses}
+                currentGuess={game.currentGuess}
+                maxGuesses={game.maxGuesses}
+                answerLength={game.answerLength}
+                highContrast={settings.highContrast}
+                showFormat={game.guesses.length > 0}
+                answerDisplay={game.puzzle.display}
+                shouldShake={game.shouldShake}
+              />
             </div>
 
-            {/* Help toolbar — compact single row */}
-            {game.gameStatus === 'playing' && (
-              <div className="flex items-center justify-center gap-1.5 mb-2 relative z-10">
-                <button
-                  onClick={onFetchClue}
-                  disabled={hints.hintUsed || hints.loadingHint}
-                  className={`btn-hint ${hints.hintUsed ? 'btn-hint-used' : 'bg-white/8 hover:bg-white/12 text-white/80 hover:text-white border-white/10'}`}
-                >
-                  {hints.loadingHint ? '...' : hints.hintUsed ? 'Clue Used' : 'Clue'}
-                </button>
-                <button
-                  onClick={onRevealVowel}
-                  disabled={hints.vowelUsed}
-                  className={`btn-hint ${hints.vowelUsed ? 'btn-hint-used' : 'bg-white/8 hover:bg-white/12 text-white/80 hover:text-white border-white/10'}`}
-                >
-                  {hints.vowelUsed ? hints.vowelRevealed : 'Vowel'}
-                </button>
-                <button
-                  onClick={onRevealConsonant}
-                  disabled={hints.consonantUsed}
-                  className={`btn-hint ${hints.consonantUsed ? 'btn-hint-used' : 'bg-white/8 hover:bg-white/12 text-white/80 hover:text-white border-white/10'}`}
-                >
-                  {hints.consonantUsed ? hints.consonantRevealed : 'Consonant'}
-                </button>
-              </div>
-            )}
+            {/* Flexible spacer — distributes remaining viewport space */}
+            <div className="flex-1" />
 
-            {/* Clue text */}
-            {hints.hint && (
-              <div className="max-w-md mx-auto mb-2 bg-blue-500/10 rounded-lg px-3 py-2 border border-blue-400/20 relative z-10">
-                <div className="text-white/80 text-xs leading-relaxed"><span className="font-semibold text-blue-300">Clue: </span>{hints.hint}</div>
-              </div>
-            )}
-
-            <GameBoard
-              guesses={game.guesses}
-              currentGuess={game.currentGuess}
-              maxGuesses={game.maxGuesses}
-              answerLength={game.answerLength}
-              highContrast={settings.highContrast}
-              showFormat={game.guesses.length > 0}
-              answerDisplay={game.puzzle.display}
-              shouldShake={game.shouldShake}
-            />
-
+            {/* Keyboard — pushed to bottom of viewport */}
             <Keyboard
               onKeyPress={game.handleKeyPress}
               onEnter={onEnter}

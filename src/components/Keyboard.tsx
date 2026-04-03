@@ -76,7 +76,7 @@ export default memo(function Keyboard({
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto px-1 pb-2 sm:pb-4">
+    <div className="w-full max-w-lg mx-auto px-1 pb-2 sm:pb-4 flex-shrink-0">
       {KEYBOARD_ROWS.map((row, rowIndex) => (
         <div key={rowIndex} className="flex gap-[3px] sm:gap-1 justify-center mb-[3px] sm:mb-1">
           {rowIndex === 1 && <div className="flex-[0.5]" />}
